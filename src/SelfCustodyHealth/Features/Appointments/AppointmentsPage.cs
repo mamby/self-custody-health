@@ -1,11 +1,12 @@
 using SelfCustodyHealth.Domain;
 using SelfCustodyHealth.Shared;
+using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 using SelfCustodyHealth.Storage;
 
 namespace SelfCustodyHealth.Features.Appointments;
 
-public sealed class AppointmentsPage(HealthDataService dataService) : ContentPage
+public sealed class AppointmentsPage(HealthDataService dataService) : ThemedContentPage
 {
 	protected override async void OnAppearing()
 	{

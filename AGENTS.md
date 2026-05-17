@@ -12,6 +12,7 @@ This repository uses one production project: `src/SelfCustodyHealth/SelfCustodyH
 - Do not store sensitive health data in plaintext files.
 - Keep platform-specific code isolated under clear service boundaries.
 - Do not make medical, diagnostic, emergency, regulatory, or clinical certification claims.
+- New UI must use shared `Ui` helpers, implicit styles, or theme resource tokens; raw UI colors belong only in the central palette.
 
 ## Architecture
 

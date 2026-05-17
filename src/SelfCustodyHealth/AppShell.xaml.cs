@@ -7,6 +7,7 @@ using SelfCustodyHealth.Features.Medications;
 using SelfCustodyHealth.Features.Settings;
 using SelfCustodyHealth.Features.Vault;
 using SelfCustodyHealth.Security;
+using SelfCustodyHealth.Shared.Theming;
 
 namespace SelfCustodyHealth;
 
@@ -21,6 +22,8 @@ public partial class AppShell : Shell
 		_services = services;
 		_appLockCoordinator = services.GetRequiredService<AppLockCoordinator>();
 		InitializeComponent();
+		ThemeResources.ApplyShellChrome(this);
+		ThemeResources.ApplyTabBarChrome(this);
 		Items.Add(CreateMainTabs());
 	}
 
@@ -80,6 +83,8 @@ public partial class AppShell : Shell
 	private TabBar CreateMainTabs()
 	{
 		var tabs = new TabBar();
+		ThemeResources.ApplyShellChrome(tabs);
+		ThemeResources.ApplyTabBarChrome(tabs);
 		tabs.Items.Add(CreateContent<DashboardPage>("Dashboard", "dashboard"));
 		tabs.Items.Add(CreateContent<VaultPage>("Vault", "vault"));
 		tabs.Items.Add(CreateContent<HealthSummaryPage>("Summary", "health-summary"));
@@ -93,11 +98,14 @@ public partial class AppShell : Shell
 	private ShellContent CreateContent<TPage>(string title, string route)
 		where TPage : Page
 	{
-		return new ShellContent
+		var content = new ShellContent
 		{
 			Title = title,
 			Route = route,
 			ContentTemplate = new DataTemplate(() => _services.GetRequiredService<TPage>())
 		};
+		ThemeResources.ApplyShellChrome(content);
+		ThemeResources.ApplyTabBarChrome(content);
+		return content;
 	}
 }

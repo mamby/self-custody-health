@@ -1,6 +1,16 @@
-using Microsoft.Maui.Controls.Shapes;
+using SelfCustodyHealth.Shared.Theming;
 
 namespace SelfCustodyHealth.Shared.Ui;
+
+internal enum UiTone
+{
+	Primary,
+	Info,
+	Success,
+	Warning,
+	Danger,
+	Muted
+}
 
 internal static class Ui
 {
@@ -29,20 +39,20 @@ internal static class Ui
 		return border;
 	}
 
-	public static Border Badge(string text, Color? background = null)
+	public static Border Badge(string text, UiTone tone = UiTone.Primary)
 	{
 		var label = new Label
 		{
 			Text = text,
 			FontFamily = "OpenSansSemibold",
 			FontSize = 12,
-			TextColor = Colors.White
+			TextColor = ThemeResources.Color("AppOnStatusText")
 		};
 
 		var border = new Border
 		{
 			Content = label,
-			BackgroundColor = background ?? Color.FromArgb("#0E7C73")
+			BackgroundColor = ThemeResources.Color(GetToneColorKey(tone))
 		};
 		ApplyStyle(border, "StatusBadgeBorder");
 		return border;
@@ -65,11 +75,18 @@ internal static class Ui
 			Style = GetStyle("SecondaryButton")
 		};
 
+	public static Button DestructiveButton(string text) =>
+		new()
+		{
+			Text = text,
+			Style = GetStyle("DestructiveSecondaryButton")
+		};
+
 	public static VerticalStackLayout PageStack(params View[] children)
 	{
 		var stack = new VerticalStackLayout
 		{
-			Padding = new Thickness(20, 18, 20, 28),
+			Padding = ThemeResources.Thickness("PagePadding"),
 			Spacing = 16
 		};
 
@@ -81,23 +98,25 @@ internal static class Ui
 		return stack;
 	}
 
-	public static ScrollView Scroll(View content) =>
-		new()
+	public static ScrollView Scroll(View content)
+	{
+		var scrollView = new ScrollView
 		{
 			Content = content,
 			VerticalScrollBarVisibility = ScrollBarVisibility.Never
 		};
+		ThemeResources.ApplyPageBackground(scrollView);
+		return scrollView;
+	}
 
 	public static Border SoftContainer(View content)
 	{
-		return new Border
+		var border = new Border
 		{
-			Content = content,
-			Padding = 14,
-			StrokeThickness = 0,
-			StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(16) },
-			BackgroundColor = Color.FromArgb("#1A0E7C73")
+			Content = content
 		};
+		ApplyStyle(border, "SoftContainerBorder");
+		return border;
 	}
 
 	private static Label StyledLabel(string text, string styleKey) =>
@@ -111,5 +130,16 @@ internal static class Ui
 		element.Style = GetStyle(styleKey);
 
 	private static Style GetStyle(string styleKey) =>
-		(Style)Application.Current!.Resources[styleKey];
+		ThemeResources.Style(styleKey);
+
+	private static string GetToneColorKey(UiTone tone) =>
+		tone switch
+		{
+			UiTone.Info => "AppInfo",
+			UiTone.Success => "AppSuccess",
+			UiTone.Warning => "AppWarning",
+			UiTone.Danger => "AppDanger",
+			UiTone.Muted => "AppMuted",
+			_ => "AppPrimary"
+		};
 }

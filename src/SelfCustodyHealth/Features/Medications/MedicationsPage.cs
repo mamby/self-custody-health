@@ -1,10 +1,11 @@
 using SelfCustodyHealth.Shared;
+using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 using SelfCustodyHealth.Storage;
 
 namespace SelfCustodyHealth.Features.Medications;
 
-public sealed class MedicationsPage(HealthDataService dataService) : ContentPage
+public sealed class MedicationsPage(HealthDataService dataService) : ThemedContentPage
 {
 	protected override async void OnAppearing()
 	{
@@ -27,7 +28,7 @@ public sealed class MedicationsPage(HealthDataService dataService) : ContentPage
 						Children =
 						{
 							Ui.SectionTitle(medication.Name),
-							Ui.Badge(medication.IsActive ? "Active" : "Inactive", medication.IsActive ? Color.FromArgb("#2E7D55") : Color.FromArgb("#6B7A80"))
+							Ui.Badge(medication.IsActive ? "Active" : "Inactive", medication.IsActive ? UiTone.Success : UiTone.Muted)
 						}
 					},
 					Ui.Body(medication.Dose),

@@ -9,14 +9,17 @@ using static AndroidX.Biometric.BiometricPrompt;
 using Foundation;
 using LocalAuthentication;
 #elif WINDOWS
+using System.Runtime.InteropServices;
 using Microsoft.Maui.Platform;
 using Microsoft.UI.Windowing;
 using Windows.Security.Credentials.UI;
+using MauiApplication = Microsoft.Maui.Controls.Application;
+using WinUIFrameworkElement = Microsoft.UI.Xaml.FrameworkElement;
 #endif
 
 namespace SelfCustodyHealth.Security;
 
-public sealed class DeviceUnlockService : IDeviceUnlockService
+public sealed partial class DeviceUnlockService : IDeviceUnlockService
 {
 	private readonly object _unlockGate = new();
 	private CancellationTokenSource? _pendingUnlockCancellation;
@@ -301,15 +304,26 @@ public sealed class DeviceUnlockService : IDeviceUnlockService
 			return DeviceUnlockResult.Failure(availability, ToAvailabilityMessage(availability));
 		}
 
-		var ownerWindow = await MainThread.InvokeOnMainThreadAsync(GetWindowsOwnerWindow);
-		if (ownerWindow is not null)
+		return await MainThread
+			.InvokeOnMainThreadAsync(() => RequestWindowsUnlockOnMainThreadAsync(reason, cancellationToken))
+			.ConfigureAwait(false);
+	}
+
+	private static async Task<DeviceUnlockResult> RequestWindowsUnlockOnMainThreadAsync(
+		string reason,
+		CancellationToken cancellationToken)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		var ownerWindow = GetWindowsOwnerWindow();
+		if (ownerWindow is null)
 		{
-			await MainThread.InvokeOnMainThreadAsync(() => RestoreAndActivateWindowsOwner(ownerWindow));
+			return DeviceUnlockResult.Failure(
+				DeviceUnlockAvailability.Unavailable,
+				"Windows Hello is unavailable because the app window is not ready.");
 		}
 
-		var ownerWindowHandle = ownerWindow is null
-			? IntPtr.Zero
-			: WinRT.Interop.WindowNative.GetWindowHandle(ownerWindow);
+		var ownerWindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(ownerWindow);
 		if (ownerWindowHandle == IntPtr.Zero)
 		{
 			return DeviceUnlockResult.Failure(
@@ -317,19 +331,19 @@ public sealed class DeviceUnlockService : IDeviceUnlockService
 				"Windows Hello is unavailable because the app window is not ready.");
 		}
 
+		RestoreAndActivateWindowsOwner(ownerWindow, ownerWindowHandle);
+
 		var operation = UserConsentVerifierInterop.RequestVerificationForWindowAsync(ownerWindowHandle, reason);
+		using var modality = WindowsOwnerModality.Enter(ownerWindow, ownerWindowHandle);
 		using var registration = cancellationToken.Register(operation.Cancel);
 		UserConsentVerificationResult result;
 		try
 		{
-			result = await operation.AsTask(cancellationToken).ConfigureAwait(false);
+			result = await operation.AsTask(cancellationToken);
 		}
 		finally
 		{
-			if (ownerWindow is not null)
-			{
-				await MainThread.InvokeOnMainThreadAsync(() => RestoreAndActivateWindowsOwner(ownerWindow));
-			}
+			RestoreAndActivateWindowsOwner(ownerWindow, ownerWindowHandle);
 		}
 
 		return result switch
@@ -346,13 +360,15 @@ public sealed class DeviceUnlockService : IDeviceUnlockService
 
 	private static MauiWinUIWindow? GetWindowsOwnerWindow()
 	{
-		var window = Application.Current?.Windows
+		var window = MauiApplication.Current?.Windows
 			.FirstOrDefault(candidate => candidate.Handler?.PlatformView is MauiWinUIWindow);
 
 		return window?.Handler?.PlatformView as MauiWinUIWindow;
 	}
 
-	private static void RestoreAndActivateWindowsOwner(MauiWinUIWindow nativeWindow)
+	private static void RestoreAndActivateWindowsOwner(
+		MauiWinUIWindow nativeWindow,
+		IntPtr ownerWindowHandle)
 	{
 		if (nativeWindow.AppWindow.Presenter is OverlappedPresenter
 			{
@@ -362,7 +378,92 @@ public sealed class DeviceUnlockService : IDeviceUnlockService
 			presenter.Restore(true);
 		}
 
+		if (WindowsNativeMethods.IsIconic(ownerWindowHandle))
+		{
+			WindowsNativeMethods.ShowWindow(
+				ownerWindowHandle,
+				WindowsNativeMethods.ShowWindowRestore);
+		}
+
 		nativeWindow.Activate();
+		WindowsNativeMethods.SetForegroundWindow(ownerWindowHandle);
+	}
+
+	private readonly struct WindowsOwnerModality : IDisposable
+	{
+		private readonly MauiWinUIWindow _ownerWindow;
+		private readonly IntPtr _ownerWindowHandle;
+		private readonly WinUIFrameworkElement? _root;
+		private readonly bool _restoreOwnerEnabled;
+		private readonly bool _previousIsHitTestVisible;
+
+		private WindowsOwnerModality(
+			MauiWinUIWindow ownerWindow,
+			IntPtr ownerWindowHandle)
+		{
+			_ownerWindow = ownerWindow;
+			_ownerWindowHandle = ownerWindowHandle;
+			_root = ownerWindow.Content as WinUIFrameworkElement;
+			_restoreOwnerEnabled = WindowsNativeMethods.IsWindowEnabled(ownerWindowHandle);
+			_previousIsHitTestVisible = _root?.IsHitTestVisible ?? true;
+
+			if (_root is not null)
+			{
+				_root.IsHitTestVisible = false;
+			}
+
+			if (_restoreOwnerEnabled)
+			{
+				WindowsNativeMethods.EnableWindow(ownerWindowHandle, false);
+			}
+		}
+
+		public static WindowsOwnerModality Enter(
+			MauiWinUIWindow ownerWindow,
+			IntPtr ownerWindowHandle) =>
+			new(ownerWindow, ownerWindowHandle);
+
+		public void Dispose()
+		{
+			if (_restoreOwnerEnabled)
+			{
+				WindowsNativeMethods.EnableWindow(_ownerWindowHandle, true);
+			}
+
+			if (_root is not null)
+			{
+				_root.IsHitTestVisible = _previousIsHitTestVisible;
+			}
+
+			RestoreAndActivateWindowsOwner(_ownerWindow, _ownerWindowHandle);
+		}
+	}
+
+	private static partial class WindowsNativeMethods
+	{
+		public const int ShowWindowRestore = 9;
+
+		[LibraryImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool EnableWindow(
+			IntPtr hWnd,
+			[MarshalAs(UnmanagedType.Bool)] bool bEnable);
+
+		[LibraryImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool IsIconic(IntPtr hWnd);
+
+		[LibraryImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool IsWindowEnabled(IntPtr hWnd);
+
+		[LibraryImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool SetForegroundWindow(IntPtr hWnd);
+
+		[LibraryImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool ShowWindow(IntPtr hWnd, int nCmdShow);
 	}
 #endif
 

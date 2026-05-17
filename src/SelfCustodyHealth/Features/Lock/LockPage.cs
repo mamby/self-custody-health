@@ -1,9 +1,10 @@
 using SelfCustodyHealth.Security;
+using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 
 namespace SelfCustodyHealth.Features.Lock;
 
-public sealed class LockPage : ContentPage
+public sealed class LockPage : ThemedContentPage
 {
 	private readonly IAppLockService _appLockService;
 	private readonly Label _message = Ui.Muted(string.Empty);

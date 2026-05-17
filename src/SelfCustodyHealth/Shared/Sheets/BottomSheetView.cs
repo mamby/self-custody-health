@@ -1,4 +1,5 @@
 using Microsoft.Maui.Controls.Shapes;
+using SelfCustodyHealth.Shared.Theming;
 
 namespace SelfCustodyHealth.Shared.Sheets;
 
@@ -20,7 +21,7 @@ public sealed class BottomSheetView : ContentView
 
 		_scrim = new BoxView
 		{
-			Color = Colors.Black,
+			Color = ThemeResources.Color("AppScrim"),
 			Opacity = 0
 		};
 		_scrim.GestureRecognizers.Add(new TapGestureRecognizer
@@ -36,8 +37,12 @@ public sealed class BottomSheetView : ContentView
 			StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(2) },
 			Opacity = 0.55,
 			HorizontalOptions = LayoutOptions.Center,
-			BackgroundColor = Color.FromArgb("#B9C7C5")
+			BackgroundColor = ThemeResources.Color("BottomSheetHandleLight")
 		};
+		handle.SetAppThemeColor(
+			Border.BackgroundColorProperty,
+			ThemeResources.Color("BottomSheetHandleLight"),
+			ThemeResources.Color("BottomSheetHandleDark"));
 
 		_scrollView = new ScrollView
 		{
@@ -71,7 +76,10 @@ public sealed class BottomSheetView : ContentView
 				}
 			}
 		};
-		_sheet.SetAppThemeColor(Border.BackgroundColorProperty, Color.FromArgb("#FFFFFF"), Color.FromArgb("#090D10"));
+		_sheet.SetAppThemeColor(
+			Border.BackgroundColorProperty,
+			ThemeResources.Color("BottomSheetSurfaceLight"),
+			ThemeResources.Color("BottomSheetSurfaceDark"));
 		Grid.SetRow(_scrollView, 1);
 
 		Content = new Grid

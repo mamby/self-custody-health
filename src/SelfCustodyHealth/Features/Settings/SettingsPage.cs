@@ -1,4 +1,5 @@
 using SelfCustodyHealth.Security;
+using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 using SelfCustodyHealth.Storage;
 
@@ -8,8 +9,16 @@ public sealed class SettingsPage(
 	IAppLockService appLockService,
 	IDeviceUnlockService deviceUnlockService,
 	IBackupService backupService,
-	HealthDataService dataService) : ContentPage
+	HealthDataService dataService,
+	IAppThemeService appThemeService) : ThemedContentPage
 {
+	private static readonly AppThemePreference[] ThemePreferences =
+	[
+		AppThemePreference.System,
+		AppThemePreference.Light,
+		AppThemePreference.Dark
+	];
+
 	protected override async void OnAppearing()
 	{
 		base.OnAppearing();
@@ -38,9 +47,10 @@ public sealed class SettingsPage(
 			}
 		};
 
-		var deleteButton = Ui.SecondaryButton("Delete local vault");
-		deleteButton.TextColor = Color.FromArgb("#B64646");
+		var deleteButton = Ui.DestructiveButton("Delete local vault");
 		deleteButton.Clicked += async (_, _) => await DeleteLocalVaultAsync();
+
+		var themePicker = CreateThemePicker();
 
 		Content = Ui.Scroll(Ui.PageStack(
 			Ui.PageTitle("Settings"),
@@ -53,6 +63,16 @@ public sealed class SettingsPage(
 					Ui.SectionTitle("Privacy"),
 					Ui.Body("Your health data stays on this device."),
 					Ui.Muted("No ads. No tracking by default. No backend health-data storage.")
+				}
+			}),
+			Ui.Card(new VerticalStackLayout
+			{
+				Spacing = 10,
+				Children =
+				{
+					Ui.SectionTitle("Appearance"),
+					Ui.Body("Choose how Self-Custody Health follows your device theme."),
+					themePicker
 				}
 			}),
 			Ui.Card(new VerticalStackLayout
@@ -100,6 +120,30 @@ public sealed class SettingsPage(
 			Ui.Muted("Self-Custody Health is not a diagnostic app and does not provide medical advice.")));
 	}
 
+	private Picker CreateThemePicker()
+	{
+		var selectedPreference = appThemeService.Preference;
+		var selectedIndex = Array.IndexOf(ThemePreferences, selectedPreference);
+		var picker = new Picker
+		{
+			Title = "Theme",
+			ItemsSource = ThemePreferences.Select(GetThemePreferenceLabel).ToArray(),
+			SelectedIndex = selectedIndex >= 0 ? selectedIndex : 0
+		};
+
+		picker.SelectedIndexChanged += (_, _) =>
+		{
+			if (picker.SelectedIndex < 0 || picker.SelectedIndex >= ThemePreferences.Length)
+			{
+				return;
+			}
+
+			appThemeService.SetPreference(ThemePreferences[picker.SelectedIndex]);
+		};
+
+		return picker;
+	}
+
 	private async Task ToggleAppLockAsync()
 	{
 		if (appLockService.IsEnabled)
@@ -134,4 +178,12 @@ public sealed class SettingsPage(
 		await dataService.DeleteLocalVaultAsync();
 		await RenderAsync();
 	}
+
+	private static string GetThemePreferenceLabel(AppThemePreference preference) =>
+		preference switch
+		{
+			AppThemePreference.Light => "Light",
+			AppThemePreference.Dark => "Dark",
+			_ => "System"
+		};
 }

@@ -9,6 +9,7 @@ using SelfCustodyHealth.Features.Medications;
 using SelfCustodyHealth.Features.Settings;
 using SelfCustodyHealth.Features.Vault;
 using SelfCustodyHealth.Security;
+using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Storage;
 
 namespace SelfCustodyHealth;
@@ -51,6 +52,8 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IAppLockSettingsStore, PreferencesAppLockSettingsStore>();
 		builder.Services.AddSingleton<IAppLockService, AppLockService>();
 		builder.Services.AddSingleton<AppLockCoordinator>();
+		builder.Services.AddSingleton<IAppThemePreferenceStore, PreferencesAppThemePreferenceStore>();
+		builder.Services.AddSingleton<IAppThemeService, AppThemeService>();
 		builder.Services.AddTransient<DashboardPage>();
 		builder.Services.AddTransient<VaultPage>();
 		builder.Services.AddTransient<HealthSummaryPage>();

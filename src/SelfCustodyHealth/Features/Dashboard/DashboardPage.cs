@@ -1,6 +1,7 @@
 using SelfCustodyHealth.Domain;
 using SelfCustodyHealth.Security;
 using SelfCustodyHealth.Shared;
+using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 using SelfCustodyHealth.Storage;
 
@@ -8,7 +9,7 @@ namespace SelfCustodyHealth.Features.Dashboard;
 
 public sealed class DashboardPage(
 	HealthDataService dataService,
-	IAppLockService appLockService) : ContentPage
+	IAppLockService appLockService) : ThemedContentPage
 {
 	protected override async void OnAppearing()
 	{
@@ -43,7 +44,7 @@ public sealed class DashboardPage(
 	private Border CreatePrivacyCard()
 	{
 		var status = appLockService.IsEnabled ? "App lock enabled" : "App lock available";
-		var badge = Ui.Badge(status, appLockService.IsEnabled ? Color.FromArgb("#2E7D55") : Color.FromArgb("#3267A8"));
+		var badge = Ui.Badge(status, appLockService.IsEnabled ? UiTone.Success : UiTone.Info);
 
 		var header = new Grid
 		{
@@ -135,7 +136,7 @@ public sealed class DashboardPage(
 					Children =
 					{
 						Ui.SectionTitle("Local AI assistant"),
-						Ui.Badge("Pending", Color.FromArgb("#A86A22"))
+						Ui.Badge("Pending", UiTone.Warning)
 					}
 				},
 				Ui.Body("AI features will run locally when available and will assist with organization only."),

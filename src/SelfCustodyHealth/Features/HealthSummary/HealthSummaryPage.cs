@@ -1,10 +1,11 @@
 using SelfCustodyHealth.Shared;
+using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 using SelfCustodyHealth.Storage;
 
 namespace SelfCustodyHealth.Features.HealthSummary;
 
-public sealed class HealthSummaryPage(HealthDataService dataService) : ContentPage
+public sealed class HealthSummaryPage(HealthDataService dataService) : ThemedContentPage
 {
 	protected override async void OnAppearing()
 	{

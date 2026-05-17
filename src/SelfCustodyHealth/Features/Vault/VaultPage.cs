@@ -1,12 +1,13 @@
 using SelfCustodyHealth.Domain;
 using SelfCustodyHealth.Shared;
 using SelfCustodyHealth.Shared.Sheets;
+using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 using SelfCustodyHealth.Storage;
 
 namespace SelfCustodyHealth.Features.Vault;
 
-public sealed class VaultPage(IDocumentStore documentStore, HealthDataService dataService) : ContentPage
+public sealed class VaultPage(IDocumentStore documentStore, HealthDataService dataService) : ThemedContentPage
 {
 	private readonly BottomSheetView _detailsSheet = new();
 	private readonly VerticalStackLayout _documentList = new() { Spacing = 10 };
@@ -101,7 +102,7 @@ public sealed class VaultPage(IDocumentStore documentStore, HealthDataService da
 
 	private Border CreateDocumentRow(MedicalDocument document)
 	{
-		var badge = Ui.Badge(document.IsDemo ? "Demo" : "Local", document.IsDemo ? Color.FromArgb("#A86A22") : Color.FromArgb("#2E7D55"));
+		var badge = Ui.Badge(document.IsDemo ? "Demo" : "Local", document.IsDemo ? UiTone.Warning : UiTone.Success);
 		var grid = new Grid
 		{
 			ColumnDefinitions =

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using SelfCustodyHealth.Shared.Theming;
 
 namespace SelfCustodyHealth;
 
@@ -10,6 +11,8 @@ public partial class App : Application
 	{
 		_services = services;
 		InitializeComponent();
+		var themeService = services.GetRequiredService<IAppThemeService>();
+		themeService.ApplySavedTheme();
 	}
 
 	protected override Window CreateWindow(IActivationState? activationState)
