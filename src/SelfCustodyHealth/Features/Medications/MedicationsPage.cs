@@ -1,4 +1,5 @@
 using SelfCustodyHealth.Shared;
+using SelfCustodyHealth.Shared.Localization;
 using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 using SelfCustodyHealth.Storage;
@@ -12,8 +13,8 @@ public sealed class MedicationsPage(HealthDataService dataService) : ThemedConte
 		base.OnAppearing();
 		var snapshot = await dataService.GetSnapshotAsync();
 		var stack = Ui.PageStack(
-			Ui.PageTitle("Medications"),
-			Ui.Body("Track treatments and reminders. This app does not tell you what to take."));
+			Ui.PageTitle(AppText.Get("MedicationsTitle")),
+			Ui.Body(AppText.Get("MedicationsIntro")));
 
 		foreach (var medication in snapshot.Medications.OrderByDescending(m => m.IsActive).ThenBy(m => m.Name))
 		{
@@ -28,12 +29,15 @@ public sealed class MedicationsPage(HealthDataService dataService) : ThemedConte
 						Children =
 						{
 							Ui.SectionTitle(medication.Name),
-							Ui.Badge(medication.IsActive ? "Active" : "Inactive", medication.IsActive ? UiTone.Success : UiTone.Muted)
+							Ui.Badge(medication.IsActive ? AppText.Get("Active") : AppText.Get("Inactive"), medication.IsActive ? UiTone.Success : UiTone.Muted)
 						}
 					},
 					Ui.Body(medication.Dose),
 					Ui.Muted(medication.Instructions),
-					Ui.Muted($"{HealthText.RecurrenceName(medication.Schedule.Recurrence)} at {medication.Schedule.TimeOfDay:h\\:mm}")
+					Ui.Muted(AppText.Format(
+						"ReminderScheduleAtFormat",
+						HealthText.RecurrenceName(medication.Schedule.Recurrence),
+						AppText.FormatTime(medication.Schedule.TimeOfDay)))
 				}
 			}));
 		}

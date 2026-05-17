@@ -16,6 +16,7 @@ using Windows.Security.Credentials.UI;
 using MauiApplication = Microsoft.Maui.Controls.Application;
 using WinUIFrameworkElement = Microsoft.UI.Xaml.FrameworkElement;
 #endif
+using SelfCustodyHealth.Shared.Localization;
 
 namespace SelfCustodyHealth.Security;
 
@@ -65,14 +66,14 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 #else
 			return DeviceUnlockResult.Failure(
 				DeviceUnlockAvailability.Unavailable,
-				"Device unlock is not available on this platform.");
+				AppText.Get("DeviceUnlockUnavailablePlatform"));
 #endif
 		}
 		catch (OperationCanceledException) when (unlockCancellation.IsCancellationRequested)
 		{
 			return DeviceUnlockResult.Failure(
 				DeviceUnlockAvailability.Available,
-				"Device unlock was canceled.");
+				AppText.Get("DeviceUnlockCanceled"));
 		}
 		finally
 		{
@@ -127,7 +128,7 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 		{
 			return DeviceUnlockResult.Failure(
 				DeviceUnlockAvailability.Unavailable,
-				"Device unlock is unavailable because the current Android activity is not ready.");
+				AppText.Get("DeviceUnlockAndroidActivityUnavailable"));
 		}
 
 		var availability = MapAndroidAvailability(BiometricManager.From(activity)
@@ -142,7 +143,7 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 			TaskCreationOptions.RunContinuationsAsynchronously);
 		var callback = new AndroidAuthenticationCallback(completion);
 		var promptInfo = new PromptInfo.Builder()
-			.SetTitle("Unlock Self-Custody Health")
+			.SetTitle(AppText.Get("UnlockPromptTitle"))
 			.SetDescription(reason)
 			.SetConfirmationRequired(true)
 			.SetAllowedAuthenticators(Authenticators.BiometricStrong | Authenticators.DeviceCredential)
@@ -153,7 +154,7 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 		{
 			return DeviceUnlockResult.Failure(
 				DeviceUnlockAvailability.Unavailable,
-				"Device unlock is unavailable because Android could not provide a main executor.");
+				AppText.Get("DeviceUnlockAndroidMainExecutorUnavailable"));
 		}
 
 		var prompt = new BiometricPrompt(activity, executor, callback);
@@ -186,7 +187,7 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 	{
 		public override void OnAuthenticationSucceeded(AuthenticationResult result)
 		{
-			completion.TrySetResult(DeviceUnlockResult.Success("Unlocked."));
+			completion.TrySetResult(DeviceUnlockResult.Success(AppText.Get("Unlocked")));
 		}
 
 		public override void OnAuthenticationFailed()
@@ -204,8 +205,8 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 
 			var message = errorCode switch
 			{
-				ErrorUserCanceled or ErrorCanceled or ErrorNegativeButton => "Device unlock was canceled.",
-				ErrorLockout or ErrorLockoutPermanent => "Device unlock is temporarily locked. Use your device passcode or try again later.",
+				ErrorUserCanceled or ErrorCanceled or ErrorNegativeButton => AppText.Get("DeviceUnlockCanceled"),
+				ErrorLockout or ErrorLockoutPermanent => AppText.Get("DeviceUnlockTemporarilyLockedWithPasscode"),
 				_ => errString.ToString()
 			};
 
@@ -235,7 +236,7 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 				reason).ConfigureAwait(false);
 
 			return success
-				? DeviceUnlockResult.Success("Unlocked.")
+				? DeviceUnlockResult.Success(AppText.Get("Unlocked"))
 				: DeviceUnlockResult.Failure(MapAppleAvailability(error), MapAppleError(error));
 		}
 		catch (OperationCanceledException)
@@ -246,7 +247,7 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 		{
 			return DeviceUnlockResult.Failure(
 				DeviceUnlockAvailability.Unavailable,
-				"Device unlock failed unexpectedly.");
+				AppText.Get("DeviceUnlockFailedUnexpectedly"));
 		}
 	}
 
@@ -268,13 +269,13 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 
 	private static string MapAppleError(NSError? error) =>
 		error is null
-			? "Device unlock failed."
+			? AppText.Get("DeviceUnlockFailed")
 			: (long)error.Code switch
 			{
-				-2 or -4 or -9 => "Device unlock was canceled.",
-				-7 => "No biometric or device credential is enrolled.",
-				-8 => "Device unlock is temporarily locked. Use your device passcode or try again later.",
-				_ => "Device unlock failed."
+				-2 or -4 or -9 => AppText.Get("DeviceUnlockCanceled"),
+				-7 => AppText.Get("DeviceUnlockAvailabilityNotEnrolled"),
+				-8 => AppText.Get("DeviceUnlockTemporarilyLockedWithPasscode"),
+				_ => AppText.Get("DeviceUnlockFailed")
 			};
 #endif
 
@@ -320,7 +321,7 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 		{
 			return DeviceUnlockResult.Failure(
 				DeviceUnlockAvailability.Unavailable,
-				"Windows Hello is unavailable because the app window is not ready.");
+				AppText.Get("WindowsHelloWindowUnavailable"));
 		}
 
 		var ownerWindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(ownerWindow);
@@ -328,7 +329,7 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 		{
 			return DeviceUnlockResult.Failure(
 				DeviceUnlockAvailability.Unavailable,
-				"Windows Hello is unavailable because the app window is not ready.");
+				AppText.Get("WindowsHelloWindowUnavailable"));
 		}
 
 		RestoreAndActivateWindowsOwner(ownerWindow, ownerWindowHandle);
@@ -348,13 +349,13 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 
 		return result switch
 		{
-			UserConsentVerificationResult.Verified => DeviceUnlockResult.Success("Unlocked."),
-			UserConsentVerificationResult.NotConfiguredForUser => DeviceUnlockResult.Failure(DeviceUnlockAvailability.NotEnrolled, "No Windows Hello method is configured for this user."),
-			UserConsentVerificationResult.DisabledByPolicy => DeviceUnlockResult.Failure(DeviceUnlockAvailability.DisabledByPolicy, "Windows Hello is disabled by policy."),
-			UserConsentVerificationResult.RetriesExhausted => DeviceUnlockResult.Failure(DeviceUnlockAvailability.LockedOut, "Windows Hello retries were exhausted."),
-			UserConsentVerificationResult.Canceled => DeviceUnlockResult.Failure(DeviceUnlockAvailability.Available, "Device unlock was canceled."),
-			UserConsentVerificationResult.DeviceBusy => DeviceUnlockResult.Failure(DeviceUnlockAvailability.Unavailable, "Windows Hello is busy. Try again."),
-			_ => DeviceUnlockResult.Failure(DeviceUnlockAvailability.Unavailable, "Windows Hello is unavailable.")
+			UserConsentVerificationResult.Verified => DeviceUnlockResult.Success(AppText.Get("Unlocked")),
+			UserConsentVerificationResult.NotConfiguredForUser => DeviceUnlockResult.Failure(DeviceUnlockAvailability.NotEnrolled, AppText.Get("NoWindowsHelloConfigured")),
+			UserConsentVerificationResult.DisabledByPolicy => DeviceUnlockResult.Failure(DeviceUnlockAvailability.DisabledByPolicy, AppText.Get("WindowsHelloDisabledByPolicy")),
+			UserConsentVerificationResult.RetriesExhausted => DeviceUnlockResult.Failure(DeviceUnlockAvailability.LockedOut, AppText.Get("WindowsHelloRetriesExhausted")),
+			UserConsentVerificationResult.Canceled => DeviceUnlockResult.Failure(DeviceUnlockAvailability.Available, AppText.Get("DeviceUnlockCanceled")),
+			UserConsentVerificationResult.DeviceBusy => DeviceUnlockResult.Failure(DeviceUnlockAvailability.Unavailable, AppText.Get("WindowsHelloBusy")),
+			_ => DeviceUnlockResult.Failure(DeviceUnlockAvailability.Unavailable, AppText.Get("WindowsHelloUnavailable"))
 		};
 	}
 
@@ -468,12 +469,5 @@ public sealed partial class DeviceUnlockService : IDeviceUnlockService
 #endif
 
 	private static string ToAvailabilityMessage(DeviceUnlockAvailability availability) =>
-		availability switch
-		{
-			DeviceUnlockAvailability.Available => "Device unlock is available.",
-			DeviceUnlockAvailability.NotEnrolled => "No biometric or device credential is enrolled.",
-			DeviceUnlockAvailability.DisabledByPolicy => "Device unlock is disabled by policy.",
-			DeviceUnlockAvailability.LockedOut => "Device unlock is temporarily locked.",
-			_ => "Device unlock is unavailable on this device."
-		};
+		DeviceUnlockText.Availability(availability);
 }

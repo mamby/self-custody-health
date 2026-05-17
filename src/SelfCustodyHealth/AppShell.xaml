@@ -45,7 +45,7 @@
                 </VisualStateManager.VisualStateGroups>
                 <Label
                     x:Name="FlyoutItemLabel"
-                    FontFamily="OpenSansSemibold"
+                    FontAttributes="Bold"
                     FontSize="14"
                     Text="{Binding Title}"
                     VerticalTextAlignment="Center" />
@@ -60,7 +60,7 @@
                 BackgroundColor="{AppThemeBinding Light={StaticResource AppSurfaceLight}, Dark={StaticResource AppSurfaceDark}}"
                 HeightRequest="50">
                 <Label
-                    FontFamily="OpenSansSemibold"
+                    FontAttributes="Bold"
                     FontSize="14"
                     Text="{Binding Text}"
                     TextColor="{AppThemeBinding Light={StaticResource AppTextPrimaryLight}, Dark={StaticResource AppTextPrimaryDark}}"

@@ -1,3 +1,5 @@
+using SelfCustodyHealth.Shared.Localization;
+
 namespace SelfCustodyHealth.Security;
 
 public interface IAppLockSettingsStore
@@ -49,7 +51,7 @@ public sealed class AppLockService(
 	public async Task<DeviceUnlockResult> EnableAsync(CancellationToken cancellationToken)
 	{
 		var result = await RequestDeviceUnlockAsync(
-			"Unlock Self-Custody Health to enable app lock.",
+			AppText.Get("UnlockSelfCustodyHealthToEnableAppLock"),
 			cancellationToken).ConfigureAwait(false);
 
 		if (!result.Succeeded)
@@ -95,11 +97,11 @@ public sealed class AppLockService(
 		if (!IsEnabled)
 		{
 			_isLocked = false;
-			return DeviceUnlockResult.Success("App lock is disabled.");
+			return DeviceUnlockResult.Success(AppText.Get("AppLockDisabled"));
 		}
 
 		var result = await RequestDeviceUnlockAsync(
-			"Unlock your local health vault.",
+			AppText.Get("UnlockLocalHealthVault"),
 			cancellationToken).ConfigureAwait(false);
 
 		if (result.Succeeded)

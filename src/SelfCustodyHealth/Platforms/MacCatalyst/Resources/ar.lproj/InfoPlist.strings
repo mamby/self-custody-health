@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Self-Custody Health";
+"CFBundleName" = "Self-Custody Health";
+"NSFaceIDUsageDescription" = "يستخدم Self-Custody Health المقاييس الحيوية لفتح خزنة صحتك المحلية عند تفعيل قفل التطبيق.";

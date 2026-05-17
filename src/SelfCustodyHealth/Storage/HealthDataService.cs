@@ -1,4 +1,6 @@
+using System.Globalization;
 using SelfCustodyHealth.Domain;
+using SelfCustodyHealth.Shared.Localization;
 
 namespace SelfCustodyHealth.Storage;
 
@@ -6,6 +8,7 @@ public sealed class HealthDataService(IVaultStore vaultStore)
 {
 	private readonly SemaphoreSlim _gate = new(1, 1);
 	private HealthVaultSnapshot? _snapshot;
+	private string? _demoCultureName;
 
 	public bool IsDemoData { get; private set; } = true;
 
@@ -14,7 +17,7 @@ public sealed class HealthDataService(IVaultStore vaultStore)
 		await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
 		try
 		{
-			if (_snapshot is not null)
+			if (_snapshot is not null && (!IsDemoData || _demoCultureName == CultureInfo.CurrentUICulture.Name))
 			{
 				return _snapshot;
 			}
@@ -28,7 +31,7 @@ public sealed class HealthDataService(IVaultStore vaultStore)
 			}
 
 			IsDemoData = true;
-			_snapshot = DemoHealthVaultFactory.Create(DateTimeOffset.Now);
+			_snapshot = CreateDemoSnapshot();
 			return _snapshot;
 		}
 		finally
@@ -47,7 +50,13 @@ public sealed class HealthDataService(IVaultStore vaultStore)
 	public async Task DeleteLocalVaultAsync(CancellationToken cancellationToken = default)
 	{
 		await vaultStore.DeleteAsync(cancellationToken).ConfigureAwait(false);
-		_snapshot = DemoHealthVaultFactory.Create(DateTimeOffset.Now);
+		_snapshot = CreateDemoSnapshot();
 		IsDemoData = true;
+	}
+
+	private HealthVaultSnapshot CreateDemoSnapshot()
+	{
+		_demoCultureName = CultureInfo.CurrentUICulture.Name;
+		return DemoHealthVaultFactory.Create(DateTimeOffset.Now, LocalizedDemoHealthVaultText.Create());
 	}
 }

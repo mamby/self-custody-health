@@ -1,4 +1,5 @@
 using SelfCustodyHealth.Security;
+using SelfCustodyHealth.Shared.Localization;
 using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 
@@ -10,7 +11,7 @@ public sealed class LockPage : ThemedContentPage
 	private readonly Label _message = Ui.Muted(string.Empty);
 	private readonly Button _unlockButton = new()
 	{
-		Text = "Unlock"
+		Text = AppText.Get("Unlock")
 	};
 
 	private CancellationTokenSource? _unlockCancellation;
@@ -24,15 +25,15 @@ public sealed class LockPage : ThemedContentPage
 		_unlockButton.Clicked += async (_, _) => await UnlockAsync();
 
 		Content = Ui.Scroll(Ui.PageStack(
-			Ui.PageTitle("Vault locked"),
-			Ui.Body("Use your device unlock method to open Self-Custody Health."),
+			Ui.PageTitle(AppText.Get("VaultLocked")),
+			Ui.Body(AppText.Get("UnlockPageIntro")),
 			Ui.Card(new VerticalStackLayout
 			{
 				Spacing = 12,
 				Children =
 				{
-					Ui.SectionTitle("Encrypted local vault"),
-					Ui.Body("Your health data stays on this device."),
+					Ui.SectionTitle(AppText.Get("EncryptedLocalVault")),
+					Ui.Body(AppText.Get("DashboardNotice")),
 					_message,
 					_unlockButton
 				}

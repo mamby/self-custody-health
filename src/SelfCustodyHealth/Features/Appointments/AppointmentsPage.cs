@@ -1,5 +1,6 @@
 using SelfCustodyHealth.Domain;
 using SelfCustodyHealth.Shared;
+using SelfCustodyHealth.Shared.Localization;
 using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 using SelfCustodyHealth.Storage;
@@ -17,13 +18,13 @@ public sealed class AppointmentsPage(HealthDataService dataService) : ThemedCont
 		var past = snapshot.Appointments.Where(appointment => appointment.StartsAt < now).OrderByDescending(appointment => appointment.StartsAt).ToArray();
 
 		var stack = Ui.PageStack(
-			Ui.PageTitle("Appointments"),
-			Ui.Body("Upcoming and past visits stay in your local vault."),
-			Ui.SectionTitle("Upcoming"));
+			Ui.PageTitle(AppText.Get("AppointmentsTitle")),
+			Ui.Body(AppText.Get("AppointmentsIntro")),
+			Ui.SectionTitle(AppText.Get("Upcoming")));
 
-		AddAppointments(stack, upcoming, "No upcoming appointments.");
-		stack.Children.Add(Ui.SectionTitle("Past"));
-		AddAppointments(stack, past, "No past appointments.");
+		AddAppointments(stack, upcoming, AppText.Get("NoUpcomingAppointments"));
+		stack.Children.Add(Ui.SectionTitle(AppText.Get("Past")));
+		AddAppointments(stack, past, AppText.Get("NoPastAppointments"));
 
 		Content = Ui.Scroll(stack);
 	}
@@ -47,9 +48,17 @@ public sealed class AppointmentsPage(HealthDataService dataService) : ThemedCont
 					Ui.Body(appointment.Clinician),
 					Ui.Muted(HealthText.FormatDateTime(appointment.StartsAt)),
 					Ui.Muted(appointment.Location),
-					Ui.Muted(appointment.RelatedDocumentIds.Count is 0 ? "No related documents" : $"{appointment.RelatedDocumentIds.Count} related document(s)")
+					Ui.Muted(GetRelatedDocumentsText(appointment.RelatedDocumentIds.Count))
 				}
 			}));
 		}
 	}
+
+	private static string GetRelatedDocumentsText(int count) =>
+		count switch
+		{
+			0 => AppText.Get("NoRelatedDocuments"),
+			1 => AppText.Get("RelatedDocumentOne"),
+			_ => AppText.Format("RelatedDocumentsManyFormat", count.ToString(AppText.Culture))
+		};
 }

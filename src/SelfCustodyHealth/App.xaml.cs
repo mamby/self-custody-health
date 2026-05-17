@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using SelfCustodyHealth.Shared.Localization;
 using SelfCustodyHealth.Shared.Theming;
 
 namespace SelfCustodyHealth;
@@ -10,6 +11,8 @@ public partial class App : Application
 	public App(IServiceProvider services)
 	{
 		_services = services;
+		var languageService = services.GetRequiredService<IAppLanguageService>();
+		languageService.ApplySavedLanguage();
 		InitializeComponent();
 		var themeService = services.GetRequiredService<IAppThemeService>();
 		themeService.ApplySavedTheme();
@@ -19,6 +22,7 @@ public partial class App : Application
 	{
 		var shell = new AppShell(_services);
 		var window = new Window(shell);
+		_services.GetRequiredService<IAppLanguageService>().ApplyFlowDirection(window);
 		var appLockCoordinator = _services.GetRequiredService<Security.AppLockCoordinator>();
 
 		window.Activated += async (_, _) =>

@@ -1,6 +1,7 @@
 using SelfCustodyHealth.Domain;
 using SelfCustodyHealth.Security;
 using SelfCustodyHealth.Shared;
+using SelfCustodyHealth.Shared.Localization;
 using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 using SelfCustodyHealth.Storage;
@@ -30,20 +31,28 @@ public sealed class DashboardPage(
 			.OrderBy(item => item.Next)
 			.FirstOrDefault();
 
+		var nextAppointment = snapshot.Appointments.OrderBy(a => a.StartsAt).FirstOrDefault();
+
 		Content = Ui.Scroll(Ui.PageStack(
-			Ui.PageTitle($"Good day, {snapshot.Profile.DisplayName}"),
-			Ui.Body("Your health data stays on this device. This app does not provide medical advice."),
+			Ui.PageTitle(AppText.Format("DashboardGreetingFormat", snapshot.Profile.DisplayName)),
+			Ui.Body(AppText.Get("DashboardNotice")),
 			CreatePrivacyCard(),
 			CreateMetrics(snapshot),
 			CreateSummaryCard(snapshot),
-			CreateNextCard("Next appointment", snapshot.Appointments.OrderBy(a => a.StartsAt).FirstOrDefault()?.Title ?? "No upcoming appointments", snapshot.Appointments.OrderBy(a => a.StartsAt).FirstOrDefault()?.StartsAt.ToString("MMM d, h:mm tt") ?? "Add one when ready"),
-			CreateNextCard("Next reminder", nextReminder?.Reminder.Title ?? "No active reminders", nextReminder?.Next?.ToString("MMM d, h:mm tt") ?? "Reminders stay local"),
+			CreateNextCard(
+				AppText.Get("NextAppointment"),
+				nextAppointment?.Title ?? AppText.Get("NoUpcomingAppointmentsShort"),
+				nextAppointment is null ? AppText.Get("AddOneWhenReady") : AppText.FormatDateTime(nextAppointment.StartsAt)),
+			CreateNextCard(
+				AppText.Get("NextReminder"),
+				nextReminder?.Reminder.Title ?? AppText.Get("NoActiveReminders"),
+				nextReminder?.Next is { } reminderTime ? AppText.FormatDateTime(reminderTime) : AppText.Get("RemindersStayLocal")),
 			CreateAiCard()));
 	}
 
 	private Border CreatePrivacyCard()
 	{
-		var status = appLockService.IsEnabled ? "App lock enabled" : "App lock available";
+		var status = appLockService.IsEnabled ? AppText.Get("AppLockEnabled") : AppText.Get("AppLockAvailable");
 		var badge = Ui.Badge(status, appLockService.IsEnabled ? UiTone.Success : UiTone.Info);
 
 		var header = new Grid
@@ -55,7 +64,7 @@ public sealed class DashboardPage(
 			},
 			Children =
 			{
-				Ui.SectionTitle("Encrypted local vault"),
+				Ui.SectionTitle(AppText.Get("EncryptedLocalVault")),
 				badge
 			}
 		};
@@ -67,8 +76,8 @@ public sealed class DashboardPage(
 			Children =
 			{
 				header,
-				Ui.Body("Health records are stored locally. Backup and sync are user-controlled and will store only encrypted data when added."),
-				Ui.Muted("Biometric unlock is an app access gate; vault encryption is managed separately.")
+				Ui.Body(AppText.Get("HealthRecordsLocalBody")),
+				Ui.Muted(AppText.Get("BiometricGateBody"))
 			}
 		});
 	}
@@ -91,10 +100,10 @@ public sealed class DashboardPage(
 			RowSpacing = 12
 		};
 
-		AddMetric(grid, "Documents", snapshot.Documents.Count.ToString(), 0, 0);
-		AddMetric(grid, "Medications", snapshot.Medications.Count(m => m.IsActive).ToString(), 1, 0);
-		AddMetric(grid, "Appointments", snapshot.Appointments.Count(a => a.StartsAt >= DateTimeOffset.Now).ToString(), 0, 1);
-		AddMetric(grid, "Reminders", snapshot.Reminders.Count(r => r.IsEnabled).ToString(), 1, 1);
+		AddMetric(grid, AppText.Get("DocumentsMetric"), snapshot.Documents.Count.ToString(AppText.Culture), 0, 0);
+		AddMetric(grid, AppText.Get("MedicationsMetric"), snapshot.Medications.Count(m => m.IsActive).ToString(AppText.Culture), 1, 0);
+		AddMetric(grid, AppText.Get("AppointmentsMetric"), snapshot.Appointments.Count(a => a.StartsAt >= DateTimeOffset.Now).ToString(AppText.Culture), 0, 1);
+		AddMetric(grid, AppText.Get("RemindersMetric"), snapshot.Reminders.Count(r => r.IsEnabled).ToString(AppText.Culture), 1, 1);
 
 		return grid;
 	}
@@ -105,10 +114,10 @@ public sealed class DashboardPage(
 			Spacing = 10,
 			Children =
 			{
-				Ui.SectionTitle("Quick health summary"),
-				Ui.Body($"Blood type: {snapshot.Summary.BloodType}"),
-				Ui.Body($"Allergies: {string.Join(", ", snapshot.Summary.Allergies)}"),
-				Ui.Muted($"Last updated {snapshot.Summary.LastUpdatedAt:MMM d, yyyy}")
+				Ui.SectionTitle(AppText.Get("QuickHealthSummary")),
+				Ui.Body(AppText.Format("BloodTypeFormat", snapshot.Summary.BloodType)),
+				Ui.Body(AppText.Format("AllergiesFormat", AppText.FormatList(snapshot.Summary.Allergies))),
+				Ui.Muted(AppText.Format("LastUpdatedFormat", AppText.FormatDate(snapshot.Summary.LastUpdatedAt)))
 			}
 		});
 
@@ -135,12 +144,12 @@ public sealed class DashboardPage(
 					Spacing = 10,
 					Children =
 					{
-						Ui.SectionTitle("Local AI assistant"),
-						Ui.Badge("Pending", UiTone.Warning)
+						Ui.SectionTitle(AppText.Get("LocalAiAssistant")),
+						Ui.Badge(AppText.Get("Pending"), UiTone.Warning)
 					}
 				},
-				Ui.Body("AI features will run locally when available and will assist with organization only."),
-				Ui.Muted("No cloud AI is enabled.")
+				Ui.Body(AppText.Get("LocalAiBody")),
+				Ui.Muted(AppText.Get("NoCloudAi"))
 			}
 		});
 

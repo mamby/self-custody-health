@@ -1,5 +1,6 @@
 using SelfCustodyHealth.Domain;
 using SelfCustodyHealth.Shared;
+using SelfCustodyHealth.Shared.Localization;
 using SelfCustodyHealth.Shared.Sheets;
 using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
@@ -11,22 +12,29 @@ public sealed class VaultPage(IDocumentStore documentStore, HealthDataService da
 {
 	private readonly BottomSheetView _detailsSheet = new();
 	private readonly VerticalStackLayout _documentList = new() { Spacing = 10 };
-	private readonly SearchBar _searchBar = new() { Placeholder = "Search local documents" };
+	private readonly SearchBar _searchBar = new();
 	private DocumentCategory _selectedCategory = DocumentCategory.All;
+	private bool _searchHandlerAttached;
 
 	protected override async void OnAppearing()
 	{
 		base.OnAppearing();
+		Build();
 		await LoadDocumentsAsync();
 	}
 
 	public void Build()
 	{
-		_searchBar.TextChanged += async (_, _) => await LoadDocumentsAsync();
+		_searchBar.Placeholder = AppText.Get("SearchLocalDocuments");
+		if (!_searchHandlerAttached)
+		{
+			_searchBar.TextChanged += async (_, _) => await LoadDocumentsAsync();
+			_searchHandlerAttached = true;
+		}
 
 		var content = Ui.PageStack(
-			Ui.PageTitle("Vault"),
-			Ui.Body("Encrypted local vault. Add document storage is scaffolded; demo records are clearly marked."),
+			Ui.PageTitle(AppText.Get("VaultTitle")),
+			Ui.Body(AppText.Get("VaultIntro")),
 			_searchBar,
 			CreateCategoryBar(),
 			_documentList,
@@ -35,9 +43,9 @@ public sealed class VaultPage(IDocumentStore documentStore, HealthDataService da
 				Spacing = 8,
 				Children =
 				{
-					Ui.SectionTitle("Add document"),
-					Ui.Body("Document import will encrypt records before saving them locally."),
-					Ui.Muted("No sensitive health data is stored in plaintext files.")
+					Ui.SectionTitle(AppText.Get("AddDocument")),
+					Ui.Body(AppText.Get("AddDocumentBody")),
+					Ui.Muted(AppText.Get("NoPlaintextSensitiveData"))
 				}
 			}));
 
@@ -86,7 +94,7 @@ public sealed class VaultPage(IDocumentStore documentStore, HealthDataService da
 		var snapshot = await dataService.GetSnapshotAsync();
 		if (dataService.IsDemoData)
 		{
-			_documentList.Children.Add(Ui.SoftContainer(Ui.Muted("Demo data only. Your encrypted vault will be created when you save real records.")));
+			_documentList.Children.Add(Ui.SoftContainer(Ui.Muted(AppText.Get("DemoDataOnlyVaultCreated"))));
 		}
 
 		foreach (var document in documents)
@@ -96,13 +104,13 @@ public sealed class VaultPage(IDocumentStore documentStore, HealthDataService da
 
 		if (documents.Count is 0)
 		{
-			_documentList.Children.Add(Ui.Card(Ui.Body("No documents match this filter.")));
+			_documentList.Children.Add(Ui.Card(Ui.Body(AppText.Get("NoDocumentsMatchFilter"))));
 		}
 	}
 
 	private Border CreateDocumentRow(MedicalDocument document)
 	{
-		var badge = Ui.Badge(document.IsDemo ? "Demo" : "Local", document.IsDemo ? UiTone.Warning : UiTone.Success);
+		var badge = Ui.Badge(document.IsDemo ? AppText.Get("BadgeDemo") : AppText.Get("BadgeLocal"), document.IsDemo ? UiTone.Warning : UiTone.Success);
 		var grid = new Grid
 		{
 			ColumnDefinitions =
@@ -145,12 +153,12 @@ public sealed class VaultPage(IDocumentStore documentStore, HealthDataService da
 			Spacing = 14,
 			Children =
 			{
-				Ui.Muted(HealthText.CategoryName(document.Category).ToUpperInvariant()),
+				Ui.Muted(HealthText.CategoryName(document.Category).ToUpper(AppText.Culture)),
 				Ui.PageTitle(document.Title),
-				Ui.Body(document.Notes ?? "No notes."),
-				Ui.Muted($"Source: {document.Source}"),
-				Ui.Muted($"Date: {HealthText.FormatDate(document.DocumentDate)}"),
-				Ui.SoftContainer(Ui.Muted("This app organizes records and does not provide medical advice."))
+				Ui.Body(document.Notes ?? AppText.Get("NoNotes")),
+				Ui.Muted(AppText.Format("SourceLabelFormat", document.Source)),
+				Ui.Muted(AppText.Format("DateLabelFormat", HealthText.FormatDate(document.DocumentDate))),
+				Ui.SoftContainer(Ui.Muted(AppText.Get("RecordAdviceDisclaimer")))
 			}
 		};
 

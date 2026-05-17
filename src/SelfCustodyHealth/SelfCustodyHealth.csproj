@@ -20,6 +20,7 @@
 		<Nullable>enable</Nullable>
 		<LangVersion>preview</LangVersion>
 		<EnablePreviewFeatures>true</EnablePreviewFeatures>
+		<NeutralLanguage>en</NeutralLanguage>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<UseMaterial3>true</UseMaterial3>
 
@@ -68,6 +69,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Update="Resources\Localization\AppResources.resx">
+			<Generator>MSBuild:Compile</Generator>
+			<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+			<StronglyTypedNamespace>SelfCustodyHealth.Resources.Localization</StronglyTypedNamespace>
+			<StronglyTypedClassName>AppResources</StronglyTypedClassName>
+			<StronglyTypedFileName>$(IntermediateOutputPath)AppResources.Designer.cs</StronglyTypedFileName>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="14.1.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="11.0.0-preview.4.26230.115" />
@@ -77,6 +88,14 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net11.0-android'">
 		<PackageReference Include="Xamarin.AndroidX.Biometric" Version="1.1.0.32" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net11.0-ios'">
+		<BundleResource Include="Platforms\iOS\Resources\**\InfoPlist.strings" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net11.0-maccatalyst'">
+		<BundleResource Include="Platforms\MacCatalyst\Resources\**\InfoPlist.strings" />
 	</ItemGroup>
 
 </Project>

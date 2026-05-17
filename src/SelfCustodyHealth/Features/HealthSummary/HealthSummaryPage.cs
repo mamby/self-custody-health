@@ -1,4 +1,5 @@
 using SelfCustodyHealth.Shared;
+using SelfCustodyHealth.Shared.Localization;
 using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 using SelfCustodyHealth.Storage;
@@ -16,23 +17,23 @@ public sealed class HealthSummaryPage(HealthDataService dataService) : ThemedCon
 		var contacts = new VerticalStackLayout
 		{
 			Spacing = 10,
-			Children = { Ui.SectionTitle("Emergency contacts") }
+			Children = { Ui.SectionTitle(AppText.Get("EmergencyContacts")) }
 		};
 
 		foreach (var contact in summary.EmergencyContacts)
 		{
-			contacts.Children.Add(Ui.Body($"{contact.Name} / {contact.Relationship} / {contact.PhoneNumber}"));
+			contacts.Children.Add(Ui.Body(AppText.Format("ContactSummaryFormat", contact.Name, contact.Relationship, contact.PhoneNumber)));
 		}
 
 		Content = Ui.Scroll(Ui.PageStack(
-			Ui.PageTitle("Health Summary"),
-			Ui.Body("A concise local summary for your own records. Verify every detail yourself."),
-			Ui.Card(CreateList("Blood type", [summary.BloodType])),
-			Ui.Card(CreateList("Allergies", summary.Allergies)),
-			Ui.Card(CreateList("Chronic conditions", summary.ChronicConditions)),
-			Ui.Card(CreateList("Surgeries", summary.Surgeries)),
+			Ui.PageTitle(AppText.Get("HealthSummaryTitle")),
+			Ui.Body(AppText.Get("HealthSummaryIntro")),
+			Ui.Card(CreateList(AppText.Get("BloodType"), [summary.BloodType])),
+			Ui.Card(CreateList(AppText.Get("Allergies"), summary.Allergies)),
+			Ui.Card(CreateList(AppText.Get("ChronicConditions"), summary.ChronicConditions)),
+			Ui.Card(CreateList(AppText.Get("Surgeries"), summary.Surgeries)),
 			Ui.Card(contacts),
-			Ui.Muted($"Last updated {summary.LastUpdatedAt:MMM d, yyyy}")));
+			Ui.Muted(AppText.Format("LastUpdatedFormat", AppText.FormatDate(summary.LastUpdatedAt)))));
 	}
 
 	private static VerticalStackLayout CreateList(string title, IReadOnlyList<string> items)
@@ -43,7 +44,7 @@ public sealed class HealthSummaryPage(HealthDataService dataService) : ThemedCon
 			Children = { Ui.SectionTitle(title) }
 		};
 
-		foreach (var item in items.DefaultIfEmpty("Not set"))
+		foreach (var item in items.DefaultIfEmpty(AppText.Get("NotSet")))
 		{
 			stack.Children.Add(Ui.Body(item));
 		}

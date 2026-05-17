@@ -1,4 +1,5 @@
 using SelfCustodyHealth.Security;
+using SelfCustodyHealth.Shared.Localization;
 using SelfCustodyHealth.Shared.Theming;
 using SelfCustodyHealth.Shared.Ui;
 using SelfCustodyHealth.Storage;
@@ -10,13 +11,21 @@ public sealed class SettingsPage(
 	IDeviceUnlockService deviceUnlockService,
 	IBackupService backupService,
 	HealthDataService dataService,
-	IAppThemeService appThemeService) : ThemedContentPage
+	IAppThemeService appThemeService,
+	IAppLanguageService appLanguageService) : ThemedContentPage
 {
 	private static readonly AppThemePreference[] ThemePreferences =
 	[
 		AppThemePreference.System,
 		AppThemePreference.Light,
 		AppThemePreference.Dark
+	];
+	private static readonly AppLanguagePreference[] LanguagePreferences =
+	[
+		AppLanguagePreference.System,
+		AppLanguagePreference.English,
+		AppLanguagePreference.French,
+		AppLanguagePreference.Arabic
 	];
 
 	protected override async void OnAppearing()
@@ -32,11 +41,11 @@ public sealed class SettingsPage(
 
 		var lockButton = new Button
 		{
-			Text = appLockService.IsEnabled ? "Disable app lock" : "Enable app lock"
+			Text = appLockService.IsEnabled ? AppText.Get("DisableAppLock") : AppText.Get("EnableAppLock")
 		};
 		lockButton.Clicked += async (_, _) => await ToggleAppLockAsync();
 
-		var lockNowButton = Ui.SecondaryButton("Lock now");
+		var lockNowButton = Ui.SecondaryButton(AppText.Get("LockNow"));
 		lockNowButton.IsEnabled = appLockService.IsEnabled;
 		lockNowButton.Clicked += async (_, _) =>
 		{
@@ -47,22 +56,23 @@ public sealed class SettingsPage(
 			}
 		};
 
-		var deleteButton = Ui.DestructiveButton("Delete local vault");
+		var deleteButton = Ui.DestructiveButton(AppText.Get("DeleteLocalVault"));
 		deleteButton.Clicked += async (_, _) => await DeleteLocalVaultAsync();
 
 		var themePicker = CreateThemePicker();
+		var languagePicker = CreateLanguagePicker();
 
 		Content = Ui.Scroll(Ui.PageStack(
-			Ui.PageTitle("Settings"),
-			Ui.Body("Privacy controls for a local-first vault."),
+			Ui.PageTitle(AppText.Get("SettingsTitle")),
+			Ui.Body(AppText.Get("PrivacyIntro")),
 			Ui.Card(new VerticalStackLayout
 			{
 				Spacing = 10,
 				Children =
 				{
-					Ui.SectionTitle("Privacy"),
-					Ui.Body("Your health data stays on this device."),
-					Ui.Muted("No ads. No tracking by default. No backend health-data storage.")
+					Ui.SectionTitle(AppText.Get("Privacy")),
+					Ui.Body(AppText.Get("DashboardNotice")),
+					Ui.Muted(AppText.Get("PrivacyNoAdsBody"))
 				}
 			}),
 			Ui.Card(new VerticalStackLayout
@@ -70,9 +80,10 @@ public sealed class SettingsPage(
 				Spacing = 10,
 				Children =
 				{
-					Ui.SectionTitle("Appearance"),
-					Ui.Body("Choose how Self-Custody Health follows your device theme."),
-					themePicker
+					Ui.SectionTitle(AppText.Get("Appearance")),
+					Ui.Body(AppText.Get("AppearanceBody")),
+					themePicker,
+					languagePicker
 				}
 			}),
 			Ui.Card(new VerticalStackLayout
@@ -80,9 +91,9 @@ public sealed class SettingsPage(
 				Spacing = 10,
 				Children =
 				{
-					Ui.SectionTitle("Encryption status"),
-					Ui.Body(dataService.IsDemoData ? "Demo data only" : "Encrypted local vault"),
-					Ui.Muted("Authenticated encryption is used for saved local vault data.")
+					Ui.SectionTitle(AppText.Get("EncryptionStatus")),
+					Ui.Body(dataService.IsDemoData ? AppText.Get("DemoDataOnly") : AppText.Get("EncryptedLocalVault")),
+					Ui.Muted(AppText.Get("AuthenticatedEncryptionBody"))
 				}
 			}),
 			Ui.Card(new VerticalStackLayout
@@ -90,9 +101,9 @@ public sealed class SettingsPage(
 				Spacing = 10,
 				Children =
 				{
-					Ui.SectionTitle("App lock"),
-					Ui.Body(appLockService.IsEnabled ? "Biometric/device unlock is enabled." : "Biometric/device unlock is off."),
-					Ui.Muted($"Device unlock availability: {availability}"),
+					Ui.SectionTitle(AppText.Get("AppLock")),
+					Ui.Body(appLockService.IsEnabled ? AppText.Get("AppLockOnBody") : AppText.Get("AppLockOffBody")),
+					Ui.Muted(AppText.Format("DeviceUnlockAvailabilityFormat", DeviceUnlockText.Availability(availability))),
 					lockButton,
 					lockNowButton
 				}
@@ -102,9 +113,9 @@ public sealed class SettingsPage(
 				Spacing = 10,
 				Children =
 				{
-					Ui.SectionTitle("Backup"),
-					Ui.Body(backupConfigured ? "User-controlled backup configured." : "User-controlled backup pending."),
-					Ui.Muted("Future backup and sync must store only encrypted data.")
+					Ui.SectionTitle(AppText.Get("Backup")),
+					Ui.Body(backupConfigured ? AppText.Get("BackupConfigured") : AppText.Get("BackupPending")),
+					Ui.Muted(AppText.Get("BackupFutureBody"))
 				}
 			}),
 			Ui.Card(new VerticalStackLayout
@@ -112,12 +123,12 @@ public sealed class SettingsPage(
 				Spacing = 10,
 				Children =
 				{
-					Ui.SectionTitle("Data"),
-					Ui.Body("Export data is planned. Delete removes the encrypted local vault and vault key."),
+					Ui.SectionTitle(AppText.Get("Data")),
+					Ui.Body(AppText.Get("DataBody")),
 					deleteButton
 				}
 			}),
-			Ui.Muted("Self-Custody Health is not a diagnostic app and does not provide medical advice.")));
+			Ui.Muted(AppText.Get("DiagnosticDisclaimer"))));
 	}
 
 	private Picker CreateThemePicker()
@@ -126,7 +137,7 @@ public sealed class SettingsPage(
 		var selectedIndex = Array.IndexOf(ThemePreferences, selectedPreference);
 		var picker = new Picker
 		{
-			Title = "Theme",
+			Title = AppText.Get("ThemePickerTitle"),
 			ItemsSource = ThemePreferences.Select(GetThemePreferenceLabel).ToArray(),
 			SelectedIndex = selectedIndex >= 0 ? selectedIndex : 0
 		};
@@ -144,6 +155,31 @@ public sealed class SettingsPage(
 		return picker;
 	}
 
+	private Picker CreateLanguagePicker()
+	{
+		var selectedPreference = appLanguageService.Preference;
+		var selectedIndex = Array.IndexOf(LanguagePreferences, selectedPreference);
+		var picker = new Picker
+		{
+			Title = AppText.Get("LanguagePickerTitle"),
+			ItemsSource = LanguagePreferences.Select(GetLanguagePreferenceLabel).ToArray(),
+			SelectedIndex = selectedIndex >= 0 ? selectedIndex : 0
+		};
+
+		picker.SelectedIndexChanged += async (_, _) =>
+		{
+			if (picker.SelectedIndex < 0 || picker.SelectedIndex >= LanguagePreferences.Length)
+			{
+				return;
+			}
+
+			appLanguageService.SetPreference(LanguagePreferences[picker.SelectedIndex]);
+			await RenderAsync();
+		};
+
+		return picker;
+	}
+
 	private async Task ToggleAppLockAsync()
 	{
 		if (appLockService.IsEnabled)
@@ -156,7 +192,7 @@ public sealed class SettingsPage(
 		var result = await appLockService.EnableAsync(CancellationToken.None);
 		if (!result.Succeeded)
 		{
-			await DisplayAlertAsync("App lock", result.Message, "OK");
+			await DisplayAlertAsync(AppText.Get("AppLock"), result.Message, AppText.Get("CommonOk"));
 		}
 
 		await RenderAsync();
@@ -165,10 +201,10 @@ public sealed class SettingsPage(
 	private async Task DeleteLocalVaultAsync()
 	{
 		var confirmed = await DisplayAlertAsync(
-			"Delete local vault",
-			"This deletes the encrypted local vault on this device. Demo data will be shown afterward.",
-			"Delete",
-			"Cancel");
+			AppText.Get("DeleteLocalVault"),
+			AppText.Get("DeleteVaultConfirmMessage"),
+			AppText.Get("CommonDelete"),
+			AppText.Get("CommonCancel"));
 
 		if (!confirmed)
 		{
@@ -182,8 +218,17 @@ public sealed class SettingsPage(
 	private static string GetThemePreferenceLabel(AppThemePreference preference) =>
 		preference switch
 		{
-			AppThemePreference.Light => "Light",
-			AppThemePreference.Dark => "Dark",
-			_ => "System"
+			AppThemePreference.Light => AppText.Get("ThemeLight"),
+			AppThemePreference.Dark => AppText.Get("ThemeDark"),
+			_ => AppText.Get("ThemeSystem")
+		};
+
+	private static string GetLanguagePreferenceLabel(AppLanguagePreference preference) =>
+		preference switch
+		{
+			AppLanguagePreference.English => AppText.Get("LanguageEnglish"),
+			AppLanguagePreference.French => AppText.Get("LanguageFrench"),
+			AppLanguagePreference.Arabic => AppText.Get("LanguageArabic"),
+			_ => AppText.Get("LanguageSystem")
 		};
 }

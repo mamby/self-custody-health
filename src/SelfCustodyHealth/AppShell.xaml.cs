@@ -7,6 +7,7 @@ using SelfCustodyHealth.Features.Medications;
 using SelfCustodyHealth.Features.Settings;
 using SelfCustodyHealth.Features.Vault;
 using SelfCustodyHealth.Security;
+using SelfCustodyHealth.Shared.Localization;
 using SelfCustodyHealth.Shared.Theming;
 
 namespace SelfCustodyHealth;
@@ -15,16 +16,45 @@ public partial class AppShell : Shell
 {
 	private readonly IServiceProvider _services;
 	private readonly AppLockCoordinator _appLockCoordinator;
+	private readonly IAppLanguageService _languageService;
 	private readonly SemaphoreSlim _lockPresentation = new(1, 1);
+	private TabBar? _mainTabs;
 
 	public AppShell(IServiceProvider services)
 	{
 		_services = services;
 		_appLockCoordinator = services.GetRequiredService<AppLockCoordinator>();
+		_languageService = services.GetRequiredService<IAppLanguageService>();
 		InitializeComponent();
+		Title = AppText.Get("AppName");
 		ThemeResources.ApplyShellChrome(this);
 		ThemeResources.ApplyTabBarChrome(this);
 		Items.Add(CreateMainTabs());
+		_languageService.LanguageChanged += (_, _) => MainThread.BeginInvokeOnMainThread(RefreshLocalizedText);
+	}
+
+	private void RefreshLocalizedText()
+	{
+		Title = AppText.Get("AppName");
+
+		if (_mainTabs is null)
+		{
+			return;
+		}
+
+		foreach (var item in _mainTabs.Items)
+		{
+			item.Title = item.Route switch
+			{
+				"dashboard" => AppText.Get("ShellDashboard"),
+				"vault" => AppText.Get("ShellVault"),
+				"health-summary" => AppText.Get("ShellSummary"),
+				"medications" => AppText.Get("ShellMedications"),
+				"appointments" => AppText.Get("ShellAppointments"),
+				"settings" => AppText.Get("ShellSettings"),
+				_ => item.Title
+			};
+		}
 	}
 
 	public Task ShowLockIfRequiredAsync()
@@ -83,14 +113,15 @@ public partial class AppShell : Shell
 	private TabBar CreateMainTabs()
 	{
 		var tabs = new TabBar();
+		_mainTabs = tabs;
 		ThemeResources.ApplyShellChrome(tabs);
 		ThemeResources.ApplyTabBarChrome(tabs);
-		tabs.Items.Add(CreateContent<DashboardPage>("Dashboard", "dashboard"));
-		tabs.Items.Add(CreateContent<VaultPage>("Vault", "vault"));
-		tabs.Items.Add(CreateContent<HealthSummaryPage>("Summary", "health-summary"));
-		tabs.Items.Add(CreateContent<MedicationsPage>("Meds", "medications"));
-		tabs.Items.Add(CreateContent<AppointmentsPage>("Visits", "appointments"));
-		tabs.Items.Add(CreateContent<SettingsPage>("Settings", "settings"));
+		tabs.Items.Add(CreateContent<DashboardPage>(AppText.Get("ShellDashboard"), "dashboard"));
+		tabs.Items.Add(CreateContent<VaultPage>(AppText.Get("ShellVault"), "vault"));
+		tabs.Items.Add(CreateContent<HealthSummaryPage>(AppText.Get("ShellSummary"), "health-summary"));
+		tabs.Items.Add(CreateContent<MedicationsPage>(AppText.Get("ShellMedications"), "medications"));
+		tabs.Items.Add(CreateContent<AppointmentsPage>(AppText.Get("ShellAppointments"), "appointments"));
+		tabs.Items.Add(CreateContent<SettingsPage>(AppText.Get("ShellSettings"), "settings"));
 
 		return tabs;
 	}

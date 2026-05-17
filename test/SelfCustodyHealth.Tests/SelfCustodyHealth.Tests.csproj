@@ -19,9 +19,17 @@
     <Compile Include="..\..\src\SelfCustodyHealth\Domain\**\*.cs" LinkBase="App\Domain" />
     <Compile Include="..\..\src\SelfCustodyHealth\Crypto\**\*.cs" LinkBase="App\Crypto" />
     <Compile Include="..\..\src\SelfCustodyHealth\Storage\**\*.cs" Exclude="..\..\src\SelfCustodyHealth\Storage\SecureStorageVaultKeyProvider.cs" LinkBase="App\Storage" />
+    <Compile Include="..\..\src\SelfCustodyHealth\Shared\Localization\AppText.cs" Link="App\Shared\Localization\AppText.cs" />
+    <Compile Include="..\..\src\SelfCustodyHealth\Shared\Localization\LocalizedDemoHealthVaultText.cs" Link="App\Shared\Localization\LocalizedDemoHealthVaultText.cs" />
     <Compile Include="..\..\src\SelfCustodyHealth\Security\DeviceUnlockAbstractions.cs" Link="App\Security\DeviceUnlockAbstractions.cs" />
     <Compile Include="..\..\src\SelfCustodyHealth\Security\AppLockService.cs" Link="App\Security\AppLockService.cs" />
     <Compile Include="..\..\src\SelfCustodyHealth\Security\AppLockCoordinator.cs" Link="App\Security\AppLockCoordinator.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\src\SelfCustodyHealth\Resources\Localization\AppResources.resx">
+      <LogicalName>SelfCustodyHealth.Resources.Localization.AppResources.resources</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

@@ -44,7 +44,7 @@ internal static class Ui
 		var label = new Label
 		{
 			Text = text,
-			FontFamily = "OpenSansSemibold",
+			FontAttributes = FontAttributes.Bold,
 			FontSize = 12,
 			TextColor = ThemeResources.Color("AppOnStatusText")
 		};

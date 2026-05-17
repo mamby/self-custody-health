@@ -1,4 +1,5 @@
 using SelfCustodyHealth.Domain;
+using SelfCustodyHealth.Shared.Localization;
 
 namespace SelfCustodyHealth.Shared;
 
@@ -7,28 +8,28 @@ internal static class HealthText
 	public static string CategoryName(DocumentCategory category) =>
 		category switch
 		{
-			DocumentCategory.All => "All",
-			DocumentCategory.LabResults => "Lab Results",
-			DocumentCategory.Prescriptions => "Prescriptions",
-			DocumentCategory.Reports => "Reports",
-			DocumentCategory.Vaccinations => "Vaccinations",
-			DocumentCategory.Other => "Other",
-			_ => "Other"
+			DocumentCategory.All => AppText.Get("CategoryAll"),
+			DocumentCategory.LabResults => AppText.Get("CategoryLabResults"),
+			DocumentCategory.Prescriptions => AppText.Get("CategoryPrescriptions"),
+			DocumentCategory.Reports => AppText.Get("CategoryReports"),
+			DocumentCategory.Vaccinations => AppText.Get("CategoryVaccinations"),
+			DocumentCategory.Other => AppText.Get("CategoryOther"),
+			_ => AppText.Get("CategoryOther")
 		};
 
 	public static string RecurrenceName(ReminderRecurrence recurrence) =>
 		recurrence switch
 		{
-			ReminderRecurrence.None => "Once",
-			ReminderRecurrence.Daily => "Daily",
-			ReminderRecurrence.Weekly => "Weekly",
-			ReminderRecurrence.Monthly => "Monthly",
-			_ => "Scheduled"
+			ReminderRecurrence.None => AppText.Get("RecurrenceOnce"),
+			ReminderRecurrence.Daily => AppText.Get("RecurrenceDaily"),
+			ReminderRecurrence.Weekly => AppText.Get("RecurrenceWeekly"),
+			ReminderRecurrence.Monthly => AppText.Get("RecurrenceMonthly"),
+			_ => AppText.Get("RecurrenceScheduled")
 		};
 
 	public static string FormatDate(DateOnly date) =>
-		date.ToString("MMM d, yyyy");
+		AppText.FormatDate(date);
 
 	public static string FormatDateTime(DateTimeOffset dateTime) =>
-		dateTime.ToString("MMM d, yyyy h:mm tt");
+		AppText.FormatDateTime(dateTime);
 }
