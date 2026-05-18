@@ -1,6 +1,6 @@
-using SelfCustodyHealth.Domain;
+using PersonalHealthVault.Domain;
 
-namespace SelfCustodyHealth.Shared.Localization;
+namespace PersonalHealthVault.Shared.Localization;
 
 internal static class LocalizedDemoHealthVaultText
 {

@@ -408,7 +408,7 @@
   <data name="UnlockPromptTitle" xml:space="preserve">
     <value>Déverrouiller Self-Custody Health</value>
   </data>
-  <data name="UnlockSelfCustodyHealthToEnableAppLock" xml:space="preserve">
+  <data name="UnlockPersonalHealthVaultToEnableAppLock" xml:space="preserve">
     <value>Déverrouillez Self-Custody Health pour activer le verrouillage de l’app.</value>
   </data>
   <data name="Unlocked" xml:space="preserve">

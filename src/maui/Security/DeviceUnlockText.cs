@@ -1,6 +1,6 @@
-using SelfCustodyHealth.Shared.Localization;
+using PersonalHealthVault.Shared.Localization;
 
-namespace SelfCustodyHealth.Security;
+namespace PersonalHealthVault.Security;
 
 internal static class DeviceUnlockText
 {

@@ -1,19 +1,19 @@
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
-using SelfCustodyHealth.Crypto;
-using SelfCustodyHealth.Features.Appointments;
-using SelfCustodyHealth.Features.Dashboard;
-using SelfCustodyHealth.Features.HealthSummary;
-using SelfCustodyHealth.Features.Lock;
-using SelfCustodyHealth.Features.Medications;
-using SelfCustodyHealth.Features.Settings;
-using SelfCustodyHealth.Features.Vault;
-using SelfCustodyHealth.Security;
-using SelfCustodyHealth.Shared.Localization;
-using SelfCustodyHealth.Shared.Theming;
-using SelfCustodyHealth.Storage;
+using PersonalHealthVault.Crypto;
+using PersonalHealthVault.Features.Appointments;
+using PersonalHealthVault.Features.Dashboard;
+using PersonalHealthVault.Features.HealthSummary;
+using PersonalHealthVault.Features.Lock;
+using PersonalHealthVault.Features.Medications;
+using PersonalHealthVault.Features.Settings;
+using PersonalHealthVault.Features.Vault;
+using PersonalHealthVault.Security;
+using PersonalHealthVault.Shared.Localization;
+using PersonalHealthVault.Shared.Theming;
+using PersonalHealthVault.Storage;
 
-namespace SelfCustodyHealth;
+namespace PersonalHealthVault;
 
 public static class MauiProgram
 {

@@ -1,6 +1,6 @@
-using SelfCustodyHealth.Security;
+using PersonalHealthVault.Security;
 
-namespace SelfCustodyHealth.Tests;
+namespace PersonalHealthVault.Tests;
 
 public sealed class AppLockServiceTests
 {

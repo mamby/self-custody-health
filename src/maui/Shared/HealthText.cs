@@ -1,7 +1,7 @@
-using SelfCustodyHealth.Domain;
-using SelfCustodyHealth.Shared.Localization;
+using PersonalHealthVault.Domain;
+using PersonalHealthVault.Shared.Localization;
 
-namespace SelfCustodyHealth.Shared;
+namespace PersonalHealthVault.Shared;
 
 internal static class HealthText
 {

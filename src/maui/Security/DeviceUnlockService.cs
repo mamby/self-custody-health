@@ -16,9 +16,9 @@ using Windows.Security.Credentials.UI;
 using MauiApplication = Microsoft.Maui.Controls.Application;
 using WinUIFrameworkElement = Microsoft.UI.Xaml.FrameworkElement;
 #endif
-using SelfCustodyHealth.Shared.Localization;
+using PersonalHealthVault.Shared.Localization;
 
-namespace SelfCustodyHealth.Security;
+namespace PersonalHealthVault.Security;
 
 public sealed partial class DeviceUnlockService : IDeviceUnlockService
 {

@@ -1,4 +1,4 @@
-namespace SelfCustodyHealth.Security;
+namespace PersonalHealthVault.Security;
 
 public enum DeviceUnlockAvailability
 {

@@ -1,6 +1,6 @@
-using SelfCustodyHealth.Shared.Theming;
+using PersonalHealthVault.Shared.Theming;
 
-namespace SelfCustodyHealth.Shared.Ui;
+namespace PersonalHealthVault.Shared.Ui;
 
 internal enum UiTone
 {

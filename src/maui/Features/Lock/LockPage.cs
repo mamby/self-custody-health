@@ -1,9 +1,9 @@
-using SelfCustodyHealth.Security;
-using SelfCustodyHealth.Shared.Localization;
-using SelfCustodyHealth.Shared.Theming;
-using SelfCustodyHealth.Shared.Ui;
+using PersonalHealthVault.Security;
+using PersonalHealthVault.Shared.Localization;
+using PersonalHealthVault.Shared.Theming;
+using PersonalHealthVault.Shared.Ui;
 
-namespace SelfCustodyHealth.Features.Lock;
+namespace PersonalHealthVault.Features.Lock;
 
 public sealed class LockPage : ThemedContentPage
 {

@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
-using SelfCustodyHealth.Crypto;
+using PersonalHealthVault.Crypto;
 
-namespace SelfCustodyHealth.Tests;
+namespace PersonalHealthVault.Tests;
 
 public sealed class EncryptionTests
 {

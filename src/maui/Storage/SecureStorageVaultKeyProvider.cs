@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
-using SelfCustodyHealth.Crypto;
+using PersonalHealthVault.Crypto;
 
-namespace SelfCustodyHealth.Storage;
+namespace PersonalHealthVault.Storage;
 
 public sealed class SecureStorageVaultKeyProvider : IVaultKeyProvider
 {

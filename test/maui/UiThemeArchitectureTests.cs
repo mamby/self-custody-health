@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace SelfCustodyHealth.Tests;
+namespace PersonalHealthVault.Tests;
 
 public sealed partial class UiThemeArchitectureTests
 {

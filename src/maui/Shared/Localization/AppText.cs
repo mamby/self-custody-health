@@ -1,12 +1,12 @@
 using System.Globalization;
 using System.Resources;
 
-namespace SelfCustodyHealth.Shared.Localization;
+namespace PersonalHealthVault.Shared.Localization;
 
 internal static class AppText
 {
 	private static readonly ResourceManager Resources = new(
-		"SelfCustodyHealth.Resources.Localization.AppResources",
+		"PersonalHealthVault.Resources.Localization.AppResources",
 		typeof(AppText).Assembly);
 
 	public static string Get(string name) =>

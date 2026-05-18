@@ -1,4 +1,4 @@
-namespace SelfCustodyHealth.Shared.Localization;
+namespace PersonalHealthVault.Shared.Localization;
 
 internal sealed class PreferencesAppLanguagePreferenceStore : IAppLanguagePreferenceStore
 {

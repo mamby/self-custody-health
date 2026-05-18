@@ -1,9 +1,9 @@
 using System.Text;
 using System.Text.Json;
-using SelfCustodyHealth.Crypto;
-using SelfCustodyHealth.Domain;
+using PersonalHealthVault.Crypto;
+using PersonalHealthVault.Domain;
 
-namespace SelfCustodyHealth.Storage;
+namespace PersonalHealthVault.Storage;
 
 public sealed class EncryptedVaultStore(
 	string vaultFilePath,

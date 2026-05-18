@@ -1,7 +1,7 @@
 using Android.App;
 using Android.Runtime;
 
-namespace SelfCustodyHealth;
+namespace PersonalHealthVault;
 
 [Application]
 public class MainApplication : MauiApplication

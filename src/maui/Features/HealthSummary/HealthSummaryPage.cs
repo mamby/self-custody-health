@@ -1,10 +1,10 @@
-using SelfCustodyHealth.Shared;
-using SelfCustodyHealth.Shared.Localization;
-using SelfCustodyHealth.Shared.Theming;
-using SelfCustodyHealth.Shared.Ui;
-using SelfCustodyHealth.Storage;
+using PersonalHealthVault.Shared;
+using PersonalHealthVault.Shared.Localization;
+using PersonalHealthVault.Shared.Theming;
+using PersonalHealthVault.Shared.Ui;
+using PersonalHealthVault.Storage;
 
-namespace SelfCustodyHealth.Features.HealthSummary;
+namespace PersonalHealthVault.Features.HealthSummary;
 
 public sealed class HealthSummaryPage(HealthDataService dataService) : ThemedContentPage
 {

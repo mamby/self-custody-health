@@ -1,4 +1,4 @@
-namespace SelfCustodyHealth.Security;
+namespace PersonalHealthVault.Security;
 
 public sealed class PreferencesAppLockSettingsStore : IAppLockSettingsStore
 {

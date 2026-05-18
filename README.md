@@ -44,9 +44,9 @@ It is not a diagnostic app. It does not provide medical advice, medical decision
 ```bash
 git clone https://github.com/mamby/self-custody-health.git
 cd self-custody-health
-dotnet restore SelfCustodyHealth.sln
-dotnet build src/SelfCustodyHealth/SelfCustodyHealth.csproj -f net11.0-windows10.0.19041.0
-dotnet test test/SelfCustodyHealth.Tests/SelfCustodyHealth.Tests.csproj
+dotnet restore PersonalHealthVault.sln
+dotnet build src/maui/PersonalHealthVault.csproj -f net11.0-windows10.0.19041.0
+dotnet test test/maui/PersonalHealthVault.Tests.csproj
 ```
 
 ## Current Limitations

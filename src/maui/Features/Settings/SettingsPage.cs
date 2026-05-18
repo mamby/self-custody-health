@@ -1,10 +1,10 @@
-using SelfCustodyHealth.Security;
-using SelfCustodyHealth.Shared.Localization;
-using SelfCustodyHealth.Shared.Theming;
-using SelfCustodyHealth.Shared.Ui;
-using SelfCustodyHealth.Storage;
+using PersonalHealthVault.Security;
+using PersonalHealthVault.Shared.Localization;
+using PersonalHealthVault.Shared.Theming;
+using PersonalHealthVault.Shared.Ui;
+using PersonalHealthVault.Storage;
 
-namespace SelfCustodyHealth.Features.Settings;
+namespace PersonalHealthVault.Features.Settings;
 
 public sealed class SettingsPage(
 	IAppLockService appLockService,

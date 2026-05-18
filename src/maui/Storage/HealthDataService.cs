@@ -1,8 +1,8 @@
 using System.Globalization;
-using SelfCustodyHealth.Domain;
-using SelfCustodyHealth.Shared.Localization;
+using PersonalHealthVault.Domain;
+using PersonalHealthVault.Shared.Localization;
 
-namespace SelfCustodyHealth.Storage;
+namespace PersonalHealthVault.Storage;
 
 public sealed class HealthDataService(IVaultStore vaultStore)
 {

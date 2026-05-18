@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace SelfCustodyHealth.Shared.Localization;
+namespace PersonalHealthVault.Shared.Localization;
 
 /// <summary>
 /// Applies the selected application language and layout direction.

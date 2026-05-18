@@ -1,6 +1,6 @@
-using SelfCustodyHealth.Shared.Localization;
+using PersonalHealthVault.Shared.Localization;
 
-namespace SelfCustodyHealth.Security;
+namespace PersonalHealthVault.Security;
 
 public interface IAppLockSettingsStore
 {
@@ -51,7 +51,7 @@ public sealed class AppLockService(
 	public async Task<DeviceUnlockResult> EnableAsync(CancellationToken cancellationToken)
 	{
 		var result = await RequestDeviceUnlockAsync(
-			AppText.Get("UnlockSelfCustodyHealthToEnableAppLock"),
+			AppText.Get("UnlockPersonalHealthVaultToEnableAppLock"),
 			cancellationToken).ConfigureAwait(false);
 
 		if (!result.Succeeded)

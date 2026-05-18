@@ -1,4 +1,4 @@
-namespace SelfCustodyHealth.Shared.Theming;
+namespace PersonalHealthVault.Shared.Theming;
 
 public interface IAppThemePreferenceStore
 {

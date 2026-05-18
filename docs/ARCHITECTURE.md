@@ -4,7 +4,7 @@ This repository uses one production .NET MAUI project with clear internal folder
 
 ## Structure
 
-- `src/SelfCustodyHealth`
+- `src/maui`
   - `Domain`: health records, reminders, document categories, and vault models
   - `Crypto`: authenticated encryption and vault key contracts
   - `Storage`: encrypted local vault persistence and future backup/local AI contracts

@@ -1,4 +1,4 @@
-namespace SelfCustodyHealth.Security;
+namespace PersonalHealthVault.Security;
 
 public readonly record struct AppLockPresentationDecision(
 	bool ShouldShowLock,

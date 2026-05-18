@@ -1,7 +1,7 @@
 using Microsoft.Maui.Controls.Shapes;
-using SelfCustodyHealth.Shared.Theming;
+using PersonalHealthVault.Shared.Theming;
 
-namespace SelfCustodyHealth.Shared.Sheets;
+namespace PersonalHealthVault.Shared.Sheets;
 
 public sealed class BottomSheetView : ContentView
 {

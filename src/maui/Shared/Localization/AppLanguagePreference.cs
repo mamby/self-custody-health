@@ -1,4 +1,4 @@
-namespace SelfCustodyHealth.Shared.Localization;
+namespace PersonalHealthVault.Shared.Localization;
 
 /// <summary>
 /// User-selectable application language preference.

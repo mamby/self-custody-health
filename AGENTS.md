@@ -1,6 +1,6 @@
 # Self-Custody Health Instructions
 
-This repository uses one production project: `src/SelfCustodyHealth/SelfCustodyHealth.csproj`.
+This repository uses one production project: `src/maui/PersonalHealthVault.csproj`.
 
 ## Rules
 

@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
-using SelfCustodyHealth.Shared.Localization;
-using SelfCustodyHealth.Shared.Theming;
+using PersonalHealthVault.Shared.Localization;
+using PersonalHealthVault.Shared.Theming;
 
-namespace SelfCustodyHealth;
+namespace PersonalHealthVault;
 
 public partial class App : Application
 {

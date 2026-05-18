@@ -1,4 +1,4 @@
-namespace SelfCustodyHealth.Domain;
+namespace PersonalHealthVault.Domain;
 
 internal sealed record DemoHealthVaultText
 {

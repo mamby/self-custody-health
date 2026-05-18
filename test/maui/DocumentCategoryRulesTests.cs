@@ -1,6 +1,6 @@
-using SelfCustodyHealth.Domain;
+using PersonalHealthVault.Domain;
 
-namespace SelfCustodyHealth.Tests;
+namespace PersonalHealthVault.Tests;
 
 public sealed class DocumentCategoryRulesTests
 {

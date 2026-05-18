@@ -8,12 +8,12 @@ Thank you for contributing.
 - Clone your fork
 - Install the current supported .NET SDK
 - Install MAUI workloads if needed
-- Run `dotnet restore SelfCustodyHealth.sln`
+- Run `dotnet restore PersonalHealthVault.sln`
 
 ## Workflow
 
 - Create a branch for your change
-- Keep production code inside `src/SelfCustodyHealth`
+- Keep production code inside `src/maui`
 - Keep tests under `test`
 - Run `dotnet test`
 - Commit with a clear message

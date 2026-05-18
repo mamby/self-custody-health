@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace SelfCustodyHealth.Crypto;
+namespace PersonalHealthVault.Crypto;
 
 public sealed class AesGcmEncryptionService : IEncryptionService
 {

@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="..\..\src\maui\Resources\Localization\AppResources.resx">
-      <LogicalName>SelfCustodyHealth.Resources.Localization.AppResources.resources</LogicalName>
+      <LogicalName>PersonalHealthVault.Resources.Localization.AppResources.resources</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 

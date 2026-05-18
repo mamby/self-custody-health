@@ -1,8 +1,8 @@
-using SelfCustodyHealth.Crypto;
-using SelfCustodyHealth.Domain;
-using SelfCustodyHealth.Storage;
+using PersonalHealthVault.Crypto;
+using PersonalHealthVault.Domain;
+using PersonalHealthVault.Storage;
 
-namespace SelfCustodyHealth.Tests;
+namespace PersonalHealthVault.Tests;
 
 public sealed class EncryptedVaultStoreTests
 {

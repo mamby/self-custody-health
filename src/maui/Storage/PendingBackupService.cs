@@ -1,4 +1,4 @@
-namespace SelfCustodyHealth.Storage;
+namespace PersonalHealthVault.Storage;
 
 public sealed class PendingBackupService : IBackupService
 {

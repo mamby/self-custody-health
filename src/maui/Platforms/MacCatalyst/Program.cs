@@ -1,7 +1,7 @@
 using ObjCRuntime;
 using UIKit;
 
-namespace SelfCustodyHealth;
+namespace PersonalHealthVault;
 
 public class Program
 {

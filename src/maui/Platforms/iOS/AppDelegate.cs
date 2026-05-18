@@ -1,6 +1,6 @@
 using Foundation;
 
-namespace SelfCustodyHealth;
+namespace PersonalHealthVault;
 
 [Register("AppDelegate")]
 public class AppDelegate : MauiUIApplicationDelegate

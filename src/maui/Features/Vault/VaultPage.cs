@@ -1,12 +1,12 @@
-using SelfCustodyHealth.Domain;
-using SelfCustodyHealth.Shared;
-using SelfCustodyHealth.Shared.Localization;
-using SelfCustodyHealth.Shared.Sheets;
-using SelfCustodyHealth.Shared.Theming;
-using SelfCustodyHealth.Shared.Ui;
-using SelfCustodyHealth.Storage;
+using PersonalHealthVault.Domain;
+using PersonalHealthVault.Shared;
+using PersonalHealthVault.Shared.Localization;
+using PersonalHealthVault.Shared.Sheets;
+using PersonalHealthVault.Shared.Theming;
+using PersonalHealthVault.Shared.Ui;
+using PersonalHealthVault.Storage;
 
-namespace SelfCustodyHealth.Features.Vault;
+namespace PersonalHealthVault.Features.Vault;
 
 public sealed class VaultPage(IDocumentStore documentStore, HealthDataService dataService) : ThemedContentPage
 {

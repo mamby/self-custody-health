@@ -1,6 +1,6 @@
-using SelfCustodyHealth.Domain;
+using PersonalHealthVault.Domain;
 
-namespace SelfCustodyHealth.Storage;
+namespace PersonalHealthVault.Storage;
 
 public interface IVaultStore
 {

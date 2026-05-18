@@ -1,4 +1,4 @@
-namespace SelfCustodyHealth.Crypto;
+namespace PersonalHealthVault.Crypto;
 
 public sealed record EncryptionResult(
 	byte[] Nonce,
