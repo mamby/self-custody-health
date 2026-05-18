@@ -15,7 +15,7 @@ public sealed partial class UiThemeArchitectureTests
 	public void ProductionUi_DoesNotUseHardcodedColorsOutsideThemePalette()
 	{
 		var repoRoot = FindRepoRoot();
-		var sourceRoot = Path.Combine(repoRoot, "src", "SelfCustodyHealth");
+		var sourceRoot = Path.Combine(repoRoot, "src", "maui");
 		string[] checkedRoots =
 		[
 			Path.Combine(sourceRoot, "Features"),
@@ -40,7 +40,7 @@ public sealed partial class UiThemeArchitectureTests
 	public void FeaturePages_UseThemedContentPage()
 	{
 		var repoRoot = FindRepoRoot();
-		var featuresRoot = Path.Combine(repoRoot, "src", "SelfCustodyHealth", "Features");
+		var featuresRoot = Path.Combine(repoRoot, "src", "maui", "Features");
 		var violations = Directory
 			.EnumerateFiles(featuresRoot, "*Page.cs", SearchOption.AllDirectories)
 			.Where(file => DirectContentPageInheritanceRegex().IsMatch(File.ReadAllText(file)))
@@ -83,7 +83,7 @@ public sealed partial class UiThemeArchitectureTests
 		var directory = new DirectoryInfo(AppContext.BaseDirectory);
 		while (directory is not null)
 		{
-			if (File.Exists(Path.Combine(directory.FullName, "SelfCustodyHealth.sln")))
+			if (File.Exists(Path.Combine(directory.FullName, "PersonalHealthVault.sln")))
 			{
 				return directory.FullName;
 			}
