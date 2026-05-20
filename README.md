@@ -1,11 +1,18 @@
 # Personal Health Vault
 
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![.NET](https://img.shields.io/badge/.NET-purple)
-![C#](https://img.shields.io/badge/C%23-blue)
-![.NET MAUI](https://img.shields.io/badge/.NET%20MAUI-purple)
+![Android](https://img.shields.io/badge/Android-native-green.svg)
+![Kotlin](https://img.shields.io/badge/Kotlin-purple.svg)
+![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-UI-blue.svg)
 
-Cross-platform personal health vault. Local-first, encrypted, and fully user-controlled. No backend, no tracking, no cloud required.
+![iOS](https://img.shields.io/badge/iOS-native-black.svg)
+![macOS](https://img.shields.io/badge/macOS-native-black.svg)
+![Swift](https://img.shields.io/badge/Swift-orange.svg)
+![SwiftUI](https://img.shields.io/badge/SwiftUI-UI-blue.svg)
+
+![Windows](https://img.shields.io/badge/Windows-native-blue.svg)
+![WinUI](https://img.shields.io/badge/WinUI-blue.svg)
+
+Personal health vault. Local-first, encrypted, and fully user-controlled. No backend, no tracking, no cloud required.
 
 Personal Health Vault is a privacy-first health app for iOS, Android, Windows, and macOS. It helps people organize personal medical records, documents, treatments, appointments, reminders, emergency contacts, and health summaries while keeping their health data on their own devices.
 
